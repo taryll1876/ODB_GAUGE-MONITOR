@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Euro Drive</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" type="image/png" href="favicon.png"> <!-- Add your favicon file here -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #0a0a0a;
+            margin: 0;
+            padding: 0;
+            color: #ffffff;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            overflow: hidden; /* Hide overflow to prevent scrolling */
+        }
+
+        .sensor-display {
+            display: none;
+            text-align: center;
+            width: 100%;
+            margin: 0; /* Reset margin */
+            padding: 0; /* Reset padding */
+        }
+
+        .sensor-display.active {
+            display: block;
+        }
+
+        .sensor {
+            background-color: #fc0000de;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 80%; /* Adjust width as needed */
+            margin: 0 auto 20px; /* Center the sensor horizontally and add bottom margin */
+        }
+
+        .value {
+            font-size: 24px;
+            margin-bottom: 5px; /* Reduce bottom margin */
+        }
+
+        .name {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .graph {
+            height: 10px;
+            background-color: #f17807;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            background-color: #007bff;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #ff0000; /* Red color */
+            color: #000000; /* Black color */
+        }
+
+        .controls button:hover {
+            background-color: #cc0000; /* Darker red color on hover */
+            color: #0f0e0e; /* White color on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sensor Displays -->
+    <div class="container">
+        <div class="sensor-display active" id="rpmSensor">
+            <div class="sensor">
+                <img src="rpm_sensor.png" alt="RPM Sensor">
+                <div class="value" id="rpmValue">0</div>
+                <div class="name">RPM</div>
+                <div class="graph" id="rpmGraph">
+                    <div class="bar" id="rpmBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="boostPressureSensor">
+            <div class="sensor">
+                <img src="boost_pressure_sensor.png" alt="Boost Pressure Sensor">
+                <div class="value" id="boostPressureValue">0</div>
+                <div class="name">Vacuum/Boost (psi)</div>
+                <div class="graph" id="boostPressureGraph">
+                    <div class="bar" id="boostPressureBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="oilPressureSensor">
+            <div class="sensor">
+                <img src="oil_pressure_sensor.png" alt="Oil Pressure Sensor">
+                <div class="value" id="oilPressureValue">0</div>
+                <div class="name">Oil Pressure (psi)</div>
+                <div class="graph" id="oilPressureGraph">
+                    <div class="bar" id="oilPressureBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="oilTempSensor">
+            <div class="sensor">
+                <img src="oil_temp_sensor.png" alt="Oil Temperature Sensor">
+                <div class="value" id="oilTempValue">0</div>
+                <div class="name">Oil Temperature (°C)</div>
+                <div class="graph" id="oilTempGraph">
+                    <div class="bar" id="oilTempBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="coolantTempSensor">
+            <div class="sensor">
+                <img src="coolant_temp_sensor.png" alt="Coolant Temperature Sensor">
+                <div class="value" id="coolantTempValue">0</div>
+                <div class="name">Coolant Temperature (°C)</div>
+                <div class="graph" id="coolantTempGraph">
+                    <div class="bar" id="coolantTempBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="mphSensor">
+            <div class="sensor">
+                <img src="mph_sensor.png" alt="Miles Per Hour Sensor">
+                <div class="value" id="mphValue">0</div>
+                <div class="name">Mph</div>
+                <div class="graph" id="mphGraph">
+                    <div class="bar" id="mphBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="gearboxPosSensor">
+            <div class="sensor">
+                <img src="gearbox_pos_sensor.png" alt="Gearbox Position Sensor">
+                <div class="value" id="gearboxPosValue">0</div>
+                <div class="name">Gear Position</div>
+                <div class="graph" id="gearboxPosGraph">
+                    <div class="bar" id="gearboxPosBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="waterTempSensor">
+            <div class="sensor">
+                <img src="water_temp_sensor.png" alt="Water Temperature Sensor">
+                <div class="value" id="waterTempValue">0</div>
+                <div class="name">Water Temperature (°C)</div>
+                <div class="graph" id="waterTempGraph">
+                    <div class="bar" id="waterTempBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="sensor-display" id="batteryVoltageSensor">
+            <div class="sensor">
+                <img src="battery_voltage_sensor.png" alt="Battery Voltage Sensor">
+                <div class="value" id="batteryVoltageValue">0</div>
+                <div class="name">Battery Voltage (V)</div>
+                <div class="graph" id="batteryVoltageGraph">
+                    <div class="bar" id="batteryVoltageBar" style="width: 0;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button id="powerBtn" class="control-btn">Power</button>
+        <button id="prevBtn" class="control-btn">Previous</button>
+        <button id="nextBtn" class="control-btn">Next</button>
+    </div>
+
+    <!-- Script -->
+    <script src="sensorDisplayController.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const sensorDisplays = document.querySelectorAll(".sensor-display");
+                let currentIndex = 0;
+        
+                // Function to update sensor display
+                function updateSensorDisplay(index) {
+                    sensorDisplays.forEach((display, i) => {
+                        if (i === index) {
+                            display.classList.add("active");
+                        } else {
+                            display.classList.remove("active");
+                        }
+                    });
+                }
+
+                // Function to handle next button click
+                document.getElementById("nextBtn").addEventListener("click", function () {
+                    currentIndex = (currentIndex + 1) % sensorDisplays.length;
+                    updateSensorDisplay(currentIndex);
+                });
+
+                // Function to handle previous button click
+                document.getElementById("prevBtn").addEventListener("click", function () {
+                    currentIndex = (currentIndex - 1 + sensorDisplays.length) % sensorDisplays.length;
+                    updateSensorDisplay(currentIndex);
+                });
+
+                // Function to simulate sensor values
+                function simulateSensorValues() {
+                    // Simulate RPM value
+                    const rpmValue = Math.floor(Math.random() * (9000 - 800 + 1)) + 800;
+                    document.getElementById("rpmValue").textContent = rpmValue;
+                    document.getElementById("rpmBar").style.width = (rpmValue / 9000) * 100 + "%";
+
+                    // Simulate Boost Pressure value (Range: 0 - 30 psi)
+                    const boostPressureValue = Math.random() * 30;
+                    document.getElementById("boostPressureValue").textContent = boostPressureValue.toFixed(2);
+
+                    // Simulate Oil Pressure value (Range: 0 - 100 psi)
+                    const oilPressureValue = Math.random() * 180;
+                    document.getElementById("oilPressureValue").textContent = oilPressureValue.toFixed(2);
+
+                    // Simulate Oil Temperature value (Range: 50 - 260 °C)
+                    const oilTempValue = Math.floor(Math.random() * (260 - 50 + 1)) + 50;
+                    document.getElementById("oilTempValue").textContent = oilTempValue;
+
+                    // Simulate Coolant Temperature value (Range: 60 - 210 °C)
+                    const coolantTempValue = Math.floor(Math.random() * (210 - 60 + 1)) + 60;
+                    document.getElementById("coolantTempValue").textContent = coolantTempValue;
+
+                    // Simulate MPH value (Range: 0 - 150 mph)
+                    const mphValue = Math.random() * 180;
+                    document.getElementById("mphValue").textContent = mphValue.toFixed(5);
+
+                    // Simulate Gearbox Position value (Range: 1 - 6)
+                    const gearboxPosValue = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
+                    document.getElementById("gearboxPosValue").textContent = gearboxPosValue;
+
+                    // Simulate Water Temperature value (Range: 60 - 120 °C)
+                    const waterTempValue = Math.floor(Math.random() * (180 - 60 + 1)) + 60;
+                    document.getElementById("waterTempValue").textContent = waterTempValue;
+
+                    // Simulate Battery Voltage value (Range: 10 - 15 volts)
+                    const batteryVoltageValue = Math.random() * (15 - 10) + 10;
+                    document.getElementById("batteryVoltageValue").textContent = batteryVoltageValue.toFixed(2);
+                }
+
+                // Initial simulation of sensor values
+                simulateSensorValues();
+
+                // Periodically update sensor values
+                setInterval(simulateSensorValues, 1000); // Update every second
+            });
+    </script>
+</body>
+</html>

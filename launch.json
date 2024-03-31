@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Arduino",
+            "type": "arduino",
+            "request": "upload",
+            "program": "${workspaceFolder}/<YourSketchName>/<YourSketchName>.ino",
+            "port": "COMx", // Change COMx to match your Arduino's port
+            "board": "arduino:avr:<YourBoardType>", // Change <YourBoardType> to match your board type
+            "cpu": "atmega328p", // Change if necessary
+            "configuration": "default"
+        }
+    ]
+}

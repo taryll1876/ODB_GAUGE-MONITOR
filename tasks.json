@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile Sketch",
+            "type": "shell",
+            "command": "arduino-cli compile --fqbn <board_fqbn> <sketch_folder>",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "Upload Sketch",
+            "type": "shell",
+            "command": "arduino-cli upload -p <port> --fqbn <board_fqbn> <sketch_folder>",
+            "dependsOn": "Compile Sketch",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Monitor Serial",
+            "type": "shell",
+            "command": "arduino-cli serial monitor -p <port>",
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}
